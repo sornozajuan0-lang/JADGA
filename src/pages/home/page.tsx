@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../../components/feature/Navigation';
@@ -6,7 +5,6 @@ import Navigation from '../../components/feature/Navigation';
 export default function HomePage() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [childName, setChildName] = useState('');
-  const [age, setAge] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,10 +15,10 @@ export default function HomePage() {
   }, []);
 
   const handleStart = () => {
-    if (childName && age) {
+    if (childName.trim()) {
+      // Guardamos que ya visitó y su nombre
       localStorage.setItem('hasVisited', 'true');
-      localStorage.setItem('childName', childName);
-      localStorage.setItem('childAge', age);
+      localStorage.setItem('childName', childName.trim());
       setShowWelcome(false);
     }
   };
@@ -28,7 +26,7 @@ export default function HomePage() {
   if (showWelcome) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 flex items-center justify-center p-4 relative overflow-hidden">
-        {/* Decorative elements */}
+        {/* Elementos decorativos animados */}
         <div className="absolute top-10 left-10 text-6xl animate-bounce">⭐</div>
         <div className="absolute top-20 right-20 text-5xl animate-pulse">🌟</div>
         <div className="absolute bottom-20 left-20 text-5xl animate-bounce delay-100">✨</div>
@@ -59,31 +57,16 @@ export default function HomePage() {
                 type="text"
                 value={childName}
                 onChange={(e) => setChildName(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleStart()}
                 className="w-full px-4 py-3 border-3 border-purple-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-400 focus:border-purple-500 text-lg font-semibold transition-all duration-300"
                 placeholder="Tu nombre"
               />
             </div>
 
-            <div className="relative">
-              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center">
-                <span className="text-2xl mr-2">🎂</span>
-                ¿Cuántos años tienes?
-              </label>
-              <input
-                type="number"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                className="w-full px-4 py-3 border-3 border-pink-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-pink-400 focus:border-pink-500 text-lg font-semibold transition-all duration-300"
-                placeholder="Tu edad"
-                min="3"
-                max="12"
-              />
-            </div>
-
             <button
               onClick={handleStart}
-              disabled={!childName || !age}
-              className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white py-4 rounded-xl font-black text-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 whitespace-nowrap cursor-pointer relative overflow-hidden group"
+              disabled={!childName.trim()}
+              className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white py-4 rounded-xl font-black text-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer relative overflow-hidden group"
             >
               <span className="relative z-10 flex items-center justify-center">
                 ¡Empezar a Aprender! 
@@ -104,6 +87,7 @@ export default function HomePage() {
     );
   }
 
+  // ... (El resto de tu componente de cards se mantiene igual)
   const cards = [
     {
       title: 'Juegos Educativos',
@@ -148,10 +132,8 @@ export default function HomePage() {
       <Navigation />
       
       <main className="max-w-7xl mx-auto px-4 py-12">
-        {/* Hero Section with Giant Logo */}
         <div className="text-center mb-16 relative">
           <div className="relative inline-block mb-8">
-            {/* Rotating stars around logo */}
             <div className="absolute inset-0 animate-spin-slow">
               <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-4xl">⭐</div>
               <div className="absolute top-1/2 -right-8 -translate-y-1/2 text-4xl">✨</div>
@@ -172,7 +154,6 @@ export default function HomePage() {
           <p className="text-2xl text-gray-600 font-bold">¿Qué quieres hacer hoy?</p>
         </div>
 
-        {/* Navigation Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           {cards.map((card, index) => (
             <div
@@ -180,7 +161,6 @@ export default function HomePage() {
               onClick={() => navigate(card.path)}
               className="group relative bg-white rounded-3xl p-10 shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer hover:scale-105 border-4 border-white overflow-hidden"
             >
-              {/* Background decorative circles */}
               <div className={`absolute -top-10 -right-10 w-40 h-40 ${card.bgPattern} rounded-full opacity-20 group-hover:scale-150 transition-transform duration-500`}></div>
               <div className={`absolute -bottom-10 -left-10 w-40 h-40 ${card.bgPattern} rounded-full opacity-20 group-hover:scale-150 transition-transform duration-500`}></div>
               
@@ -198,7 +178,6 @@ export default function HomePage() {
           ))}
         </div>
 
-        {/* Features Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             { icon: '🎯', title: 'Aprende Jugando', desc: 'Juegos educativos divertidos', color: 'from-pink-400 to-rose-400' },
